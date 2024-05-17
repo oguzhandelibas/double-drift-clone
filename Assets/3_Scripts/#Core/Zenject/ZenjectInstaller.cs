@@ -7,6 +7,7 @@ namespace DoubleDrift
     {
         public override void InstallBindings()
         {
+            Container.Bind<InfinityPathManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<UIManager>().FromComponentInHierarchy().AsSingle();
         }
     }

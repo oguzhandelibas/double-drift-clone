@@ -1,18 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using DoubleDrift;
 using UnityEngine;
+using Zenject;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [Inject] private InfinityPathManager _infinityPathManager;
+    public int levelIndex = 0; 
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        _infinityPathManager.Initialize(levelIndex);
     }
 }
