@@ -8,9 +8,10 @@ namespace DoubleDrift.UIModule
         //[Inject] private LevelSignals _levelSignals;
         #region BUTTONS
 
-        public void _StartButton()
+        public void _PlayButton()
         {
-            //UIManager.Instance.Show<GameUI>();
+            Debug.Log($"Play Button Invoked!");
+            UIManager.Instance.Show<GameUI>();
             //_levelSignals.onLevelInitialize.Invoke();
         }
         #endregion

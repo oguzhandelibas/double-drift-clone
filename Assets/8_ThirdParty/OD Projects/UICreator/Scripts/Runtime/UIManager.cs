@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DoubleDrift.UIModule
 {
-    public class UIManager : MonoBehaviour
+    public class UIManager : AbstractSingleton<UIManager>
     {
         [SerializeField]
         Canvas m_Canvas;
