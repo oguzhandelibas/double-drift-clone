@@ -15,6 +15,6 @@ namespace DoubleDrift
     public class PathData : ScriptableObject
     {
         [SerializedDictionary("Path Type", "Path Object")]
-        public SerializedDictionary<PathTypes, Pool> Path;
+        public SerializedDictionary<PathType, Pool> Path;
     }
 }

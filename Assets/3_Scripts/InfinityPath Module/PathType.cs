@@ -1,6 +1,6 @@
 namespace DoubleDrift
 {
-    public enum PathTypes
+    public enum PathType
     {
         Road
     }

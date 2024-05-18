@@ -7,14 +7,14 @@ namespace DoubleDrift
     public class ObjectPooler : MonoBehaviour
     {
         [SerializeField] private PathData[] pathDatas;
-        public Dictionary<PathTypes, Queue<GameObject>> poolDictionary;
+        public Dictionary<PathType, Queue<GameObject>> poolDictionary;
 
         public void Initialize(int levelIndex)
         {
             Debug.Log($"Object Pooler Initialize Called!");
-            poolDictionary = new Dictionary<PathTypes, Queue<GameObject>>();
+            poolDictionary = new Dictionary<PathType, Queue<GameObject>>();
 
-            foreach (KeyValuePair<PathTypes, Pool> kvp in pathDatas[levelIndex].Path)
+            foreach (KeyValuePair<PathType, Pool> kvp in pathDatas[levelIndex].Path)
             {
                 Queue<GameObject> objectPool = new Queue<GameObject>();
 
@@ -30,7 +30,7 @@ namespace DoubleDrift
             Debug.Log($"Object Pooler Initialized!");
         }
 
-        public GameObject SpawnFromPool(PathTypes tag, Vector3 position, Quaternion rotation, out Vector3 objectSize)
+        public GameObject SpawnFromPool(PathType tag, Vector3 position, Quaternion rotation, out Vector3 objectSize)
         {
             if (!poolDictionary.ContainsKey(tag))
             {
