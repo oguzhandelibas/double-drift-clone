@@ -31,7 +31,6 @@ namespace DoubleDrift
         private CarData _carData;
         private float _carMaxSpeed, _carAcceleration, _carHandling;
         
-        public float acceleration = 5f; // Hızlanma değeri (m/s^2)
         private float _currentSpeed = 0f; // Anlık hız (m/s)
         private float currentAccelerationTime = 0f; // Anlık hızlanma süresi
         private bool isAccelerating = false; 
@@ -52,7 +51,7 @@ namespace DoubleDrift
             if (isAccelerating)
             {
                 currentAccelerationTime += Time.deltaTime;
-                _currentSpeed += acceleration * Time.deltaTime;
+                _currentSpeed += _carAcceleration * Time.deltaTime;
                 
                 if (_currentSpeed > _carMaxSpeed)
                 {
@@ -63,7 +62,7 @@ namespace DoubleDrift
             {
                 if (_currentSpeed > 0)
                 {
-                    _currentSpeed -= acceleration * Time.deltaTime * 0.5f;
+                    _currentSpeed -= _carAcceleration * Time.deltaTime * 0.5f;
 
                     if (_currentSpeed < 0)
                     {

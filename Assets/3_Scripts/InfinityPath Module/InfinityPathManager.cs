@@ -83,10 +83,11 @@ namespace DoubleDrift
         private void MovePaths()
         {
             if(onPathChange) return;
-            
+
+            float carSpeed = _carManager.CurrentCarSpeed / 3;
             foreach (GameObject path in activePaths)
             {
-                path.transform.Translate(Vector3.back * _carManager.CurrentCarSpeed * Time.deltaTime);
+                path.transform.Translate(Vector3.back * carSpeed * Time.deltaTime);
             }
         }
 

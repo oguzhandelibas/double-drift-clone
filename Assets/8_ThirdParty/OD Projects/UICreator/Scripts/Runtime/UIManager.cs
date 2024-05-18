@@ -20,7 +20,7 @@ namespace DoubleDrift.UIModule
         [SerializeField] private TextMeshProUGUI speedText;
         public void SetCarSpeed(int carSpeed)
         {
-            speedText.text = (carSpeed * 3).ToString() + " mph";
+            speedText.text = carSpeed+ " mph";
         }
         
         void Start()
