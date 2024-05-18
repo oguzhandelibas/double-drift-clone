@@ -20,7 +20,7 @@ public class GameManager : AbstractSingleton<GameManager>
         gameIsStarted = false;
         Transform vehicleTransform = _carManager.Initialize(inGameTransform);
         _cameraManager.SetFollowObject(vehicleTransform.GetChild(0));
-        _infinityPathManager.Initialize(levelIndex, vehicleTransform);
+        _infinityPathManager.Initialize(vehicleTransform);
     }
 
     public int GetLevelIndex() => levelIndex;

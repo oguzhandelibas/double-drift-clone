@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace DoubleDrift
 {
-    public class LevelSignals : MonoBehaviour
+    public class LevelSignals : AbstractSingleton<LevelSignals>
     {
         public UnityAction onLevelInitialize = delegate { };
         public UnityAction onLevelSuccessful = delegate { };

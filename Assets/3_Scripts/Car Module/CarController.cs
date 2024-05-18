@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using DoubleDrift.UIModule;
 using UnityEngine;
@@ -154,7 +155,24 @@ namespace DoubleDrift
         }
 
 
+        public void LevelSuccesful()
+        {
+            StopEngine();
+        }
+
+        #region EVENT SUBSCRIPTION
+
+        private void OnEnable()
+        {
+            LevelSignals.Instance.onLevelSuccessful += LevelSuccesful;
+        }
         
+        private void OnDisable()
+        {
+            LevelSignals.Instance.onLevelSuccessful -= LevelSuccesful;
+        }
+
+        #endregion
         
     }
 }

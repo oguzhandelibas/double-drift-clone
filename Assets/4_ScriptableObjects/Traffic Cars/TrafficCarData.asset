@@ -9,14 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c613795444e2457980ebdf76f80b070, type: 3}
-  m_Name: Level 1 - PathData
+  m_Script: {fileID: 11500000, guid: a8c92ab03b574484e8e0a5a1d7eb9e3d, type: 3}
+  m_Name: TrafficCarData
   m_EditorClassIdentifier: 
-  repeatCount: 2
-  Path:
+  TrafficCars:
     _serializedList:
     - Key: 0
-      Value:
-        prefab: {fileID: 1619354459316665127, guid: 2f249c32894a74ba6bd5e03e6a550001,
-          type: 3}
-        size: 3
+      Value: {fileID: 5796462046832887360, guid: 3ba9aefa6bcdb7f45aa1985b96dd4b55,
+        type: 3}
