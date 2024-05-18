@@ -11,13 +11,19 @@ namespace DoubleDrift
         [Inject] public CameraManager cameraManager;
         [SerializeField] private SlideControl slideControl;
         private IControllable _controllable;
+        public int CurrentCarSpeed { get; set; }
 
+        public CarData GetCarData() => carData;
+        
         public Transform Initialize(Transform carParent)
         {
             Debug.Log($"Car Manager Initializing...");
 
             Transform controllerTransform = Instantiate(carData.car.prefab, carParent).transform;
-            controllerTransform.GetComponent<CarController>().carManager = this;
+            CarController carController = controllerTransform.GetComponent<CarController>();
+            carController.carManager = this;
+            carController.Initialize();
+            
             _controllable = controllerTransform.GetComponent<IControllable>();
             
             slideControl.OnSlide += _controllable.Rotate;

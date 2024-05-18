@@ -7,6 +7,7 @@ namespace DoubleDrift
     {
         public override void InstallBindings()
         {
+            Container.Bind<LevelSignals>().FromComponentInHierarchy().AsSingle();
             Container.Bind<CarManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<CameraManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<InfinityPathManager>().FromComponentInHierarchy().AsSingle();

@@ -1,5 +1,6 @@
 using AYellowpaper.SerializedCollections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace DoubleDrift
 {
@@ -12,7 +13,7 @@ namespace DoubleDrift
         
         [Header("Information")]
         public CarType name;
-        public float speed;
+        public float maxSpeed;
         public float acceleration;
         public float handling;
     }
@@ -21,5 +22,9 @@ namespace DoubleDrift
     public class CarData : ScriptableObject
     {
         public Car car;
+
+        public float GetCarSpeed() => car.maxSpeed;
+        public float GetCarAcceleration() => car.acceleration;
+        public float GetCarHandling() => car.handling;
     }
 }

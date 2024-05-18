@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 namespace DoubleDrift.UIModule
@@ -12,14 +13,16 @@ namespace DoubleDrift.UIModule
         RectTransform m_Root;
         [SerializeField]
         RectTransform m_ViewLayer;
-        List<View> m_Views;
+        List<View> m_Views = new List<View>();
         View m_CurrentView;
         readonly Stack<View> m_History = new();
 
-        private int gameIndex;
-        private int unitIndex;
-        public int GameIndex { get => gameIndex; set => gameIndex = value; }
-        public int UnitIndex { get => unitIndex; set => unitIndex = value; }
+        [SerializeField] private TextMeshProUGUI speedText;
+        public void SetCarSpeed(int carSpeed)
+        {
+            speedText.text = (carSpeed * 3).ToString() + " mph";
+        }
+        
         void Start()
         {
             m_Views = m_Root.GetComponentsInChildren<View>(true).ToList();
@@ -32,6 +35,7 @@ namespace DoubleDrift.UIModule
             foreach (var view in m_Views)
                 view.Hide();
             m_History.Clear();
+            Show<HomeUI>();
         }
 
         /// <summary>
@@ -90,7 +94,7 @@ namespace DoubleDrift.UIModule
 
                 m_CurrentView.Hide();
             }
-
+            
             view.Show();
             m_CurrentView = view;
         }

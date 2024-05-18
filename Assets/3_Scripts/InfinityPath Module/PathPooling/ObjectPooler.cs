@@ -9,7 +9,7 @@ namespace DoubleDrift
         [SerializeField] private PathData[] pathDatas;
         public Dictionary<PathType, Queue<GameObject>> poolDictionary;
 
-        public void Initialize(int levelIndex)
+        public PathData Initialize(int levelIndex)
         {
             Debug.Log($"Object Pooler Initialize Called!");
             poolDictionary = new Dictionary<PathType, Queue<GameObject>>();
@@ -28,6 +28,7 @@ namespace DoubleDrift
                 poolDictionary.Add(kvp.Key, objectPool);
             }
             Debug.Log($"Object Pooler Initialized!");
+            return pathDatas[levelIndex];
         }
 
         public GameObject SpawnFromPool(PathType tag, Vector3 position, Quaternion rotation, out Vector3 objectSize)

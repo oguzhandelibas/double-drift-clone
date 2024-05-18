@@ -57,6 +57,7 @@ namespace DoubleDrift
 
         private void Update()
         {
+            if(!GameManager.Instance.gameIsStarted) return;
             if (Input.GetMouseButtonDown(0))
             {
                 touchStart = Input.mousePosition;

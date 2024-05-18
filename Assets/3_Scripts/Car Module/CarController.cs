@@ -1,4 +1,5 @@
 using DG.Tweening;
+using DoubleDrift.UIModule;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Zenject;
@@ -12,7 +13,6 @@ namespace DoubleDrift
         /// ARAÇ KALKIŞ ANINDA ÇATARA PATARA !!!
         /// DRIFT SÜRESİNE GÖRE EASE TİPİ
         /// ok DRIFT ESNASINDA KAMERA HAREKETİ
-        /// Efekt işlemlerini farklı bir class'a al, sürdürülebilir bi yapıda olsun
         /// </summary>
 
         [HideInInspector] public CarManager carManager;
@@ -28,6 +28,62 @@ namespace DoubleDrift
         public float moveDuration = 2.5f;
 
         private Tween _rotateTween, _moveTween;
+        private CarData _carData;
+        private float _carMaxSpeed, _carAcceleration, _carHandling;
+        
+        public float acceleration = 5f; // Hızlanma değeri (m/s^2)
+        private float _currentSpeed = 0f; // Anlık hız (m/s)
+        private float currentAccelerationTime = 0f; // Anlık hızlanma süresi
+        private bool isAccelerating = false; 
+        public void Initialize()
+        {
+            _carData = carManager.GetCarData();
+            _carMaxSpeed = _carData.GetCarSpeed();
+            _carAcceleration = _carData.GetCarAcceleration();
+            _carHandling = _carData.GetCarHandling();
+            
+            StartEngine();
+        }
+        
+        void Update()
+        {
+            if(!GameManager.Instance.gameIsStarted) return;
+            
+            if (isAccelerating)
+            {
+                currentAccelerationTime += Time.deltaTime;
+                _currentSpeed += acceleration * Time.deltaTime;
+                
+                if (_currentSpeed > _carMaxSpeed)
+                {
+                    _currentSpeed = _carMaxSpeed;
+                }
+            }
+            else
+            {
+                if (_currentSpeed > 0)
+                {
+                    _currentSpeed -= acceleration * Time.deltaTime * 0.5f;
+
+                    if (_currentSpeed < 0)
+                    {
+                        _currentSpeed = 0;
+                    }
+                }
+            }
+            carManager.CurrentCarSpeed = (int)_currentSpeed;
+            UIManager.Instance.SetCarSpeed((int)_currentSpeed);
+        }
+        
+        public void StartEngine()
+        {
+            isAccelerating = true;
+        }
+
+        public void StopEngine()
+        {
+            isAccelerating = false;
+        }
         
         public void Rotate(float targetRotation)
         {
@@ -35,7 +91,7 @@ namespace DoubleDrift
 
             DriftEffect();
             
-            if(targetRotation < 0) DriftOnLeft(targetRotation/2);
+            if(targetRotation > 0) DriftOnLeft(targetRotation/2);
             else DriftOnRight(targetRotation/2);
             
             float movePos = Mathf.Clamp(carTransform.localPosition.x + (targetRotation / 40), -3, 3);
@@ -46,6 +102,8 @@ namespace DoubleDrift
         private void DriftEffect()
         {
             if(driftEffectStarted) return;
+
+            _carMaxSpeed -= 10;
             carManager.cameraManager.ZoomIn();
             foreach (var burstEffect in burstEffects)
             {
@@ -56,16 +114,16 @@ namespace DoubleDrift
 
         private void DriftOnLeft(float targetRotation)
         {
-            carBodyTransform.DOLocalRotate(new Vector3(1.5f, 0, 6.0f), rotationDuration, RotateMode.Fast);
+            carBodyTransform.DOLocalRotate(new Vector3(1.5f, 0, -6.0f), rotationDuration, RotateMode.Fast);
             foreach (var frontWheel in frontWheels)
             {
-                frontWheel.DOLocalRotate(new Vector3(0f, -targetRotation, 0.0f), rotationDuration, RotateMode.Fast);
+                frontWheel.DOLocalRotate(new Vector3(0f, targetRotation, 0.0f), rotationDuration, RotateMode.Fast);
             }
         }
 
         private void DriftOnRight(float targetRotation)
         {
-            carBodyTransform.DOLocalRotate(new Vector3(1.5f, 0, -6.0f), rotationDuration, RotateMode.Fast);
+            carBodyTransform.DOLocalRotate(new Vector3(1.5f, 0, 6.0f), rotationDuration, RotateMode.Fast);
             foreach (var frontWheel in frontWheels)
             {
                 frontWheel.DOLocalRotate(new Vector3(0f, targetRotation, 0.0f), rotationDuration, RotateMode.Fast);
@@ -74,6 +132,7 @@ namespace DoubleDrift
         
         public void Reset()
         {
+            _carMaxSpeed = _carData.GetCarSpeed();
             _rotateTween.Kill();
             _moveTween.Kill();
             carManager.cameraManager.ZoomOut();

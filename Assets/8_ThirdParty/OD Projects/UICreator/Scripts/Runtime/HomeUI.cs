@@ -5,14 +5,15 @@ namespace DoubleDrift.UIModule
 {
     public class HomeUI : View
     {
-        //[Inject] private LevelSignals _levelSignals;
+        [Inject] private LevelSignals _levelSignals;
         #region BUTTONS
 
         public void _PlayButton()
         {
             Debug.Log($"Play Button Invoked!");
             UIManager.Instance.Show<GameUI>();
-            //_levelSignals.onLevelInitialize.Invoke();
+            GameManager.Instance.StartGame();
+            _levelSignals.onLevelInitialize.Invoke();
         }
         #endregion
     }

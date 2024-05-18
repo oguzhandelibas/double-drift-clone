@@ -1,28 +1,41 @@
 using System.Collections.Generic;
+using DoubleDrift.UIModule;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Zenject;
 
 namespace DoubleDrift
 {
     public class InfinityPathManager : MonoBehaviour
     {
+        [Inject] private CarManager _carManager;
         public ObjectPooler objectPooler;
         public PathType poolTag;
-        public int numberOfPaths = 5; // Sahnede aynı anda kaç yol objesi bulunacağını belirler
         public Vector3 initialSpawnPosition = Vector3.zero;
         public Transform vehicle; // Aracın Transform'u
         public int triggerDistance = 3; // Yeni yol oluşturma işleminin tetikleneceği mesafe
-        public float pathSpeed = 5f; // Yol hareket hızı
 
+        private PathData currentPathData;
+        public int numberOfPaths = 0; // Sahnede aynı anda kaç yol objesi bulunacağını belirler
+        public int wayToGoCount; 
+            
         private Queue<GameObject> activePaths = new Queue<GameObject>();
         private Vector3 nextSpawnPosition;
         private Vector3 pathOffset;
+        private bool onPathChange = false;
 
         public void Initialize(int levelIndex, Transform vehicleTransform)
         {
             Debug.Log("Infinity Path Manager Initialize Called!");
             vehicle = vehicleTransform;
-            objectPooler.Initialize(levelIndex);
+            currentPathData = objectPooler.Initialize(levelIndex);
 
+            foreach (var cur in currentPathData.Path)
+            {
+                numberOfPaths += cur.Value.size;
+            }
+            wayToGoCount = currentPathData.repeatCount * numberOfPaths;
+            
             nextSpawnPosition = initialSpawnPosition;
 
             for (int i = 0; i < numberOfPaths; i++)
@@ -53,7 +66,7 @@ namespace DoubleDrift
             }
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (activePaths == null || activePaths.Count == 0)
             {
@@ -61,15 +74,19 @@ namespace DoubleDrift
                 return;
             }
 
+            if (!GameManager.Instance.gameIsStarted) return;
+          
             MovePaths();
             CheckAndRecyclePaths();
         }
 
         private void MovePaths()
         {
+            if(onPathChange) return;
+            
             foreach (GameObject path in activePaths)
             {
-                path.transform.Translate(Vector3.back * pathSpeed * Time.deltaTime);
+                path.transform.Translate(Vector3.back * _carManager.CurrentCarSpeed * Time.deltaTime);
             }
         }
 
@@ -77,6 +94,7 @@ namespace DoubleDrift
         {
             if (vehicle.position.z > GetActivePathWithOffsetAndTriggerDistance())
             {
+                onPathChange = true;
                 GameObject oldPath = activePaths.Dequeue();
                 oldPath.SetActive(false);
 
@@ -84,6 +102,14 @@ namespace DoubleDrift
                 oldPath.SetActive(true);
 
                 activePaths.Enqueue(oldPath);
+                wayToGoCount--;
+                if (wayToGoCount <= 0)
+                {
+                    UIManager.Instance.Show<HomeUI>();
+                    GameManager.Instance.StopGame();
+                }
+
+                onPathChange = false;
             }
         }
 

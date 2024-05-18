@@ -17,7 +17,7 @@ namespace DoubleDrift
 
         public void Reset()
         {
-            targetWheel.DORotate(Vector3.zero, 3, RotateMode.Fast).SetEase(Ease.OutQuad); 
+            targetWheel.DORotate(Vector3.zero, 2, RotateMode.Fast).SetEase(Ease.OutQuad); 
         }
         
         #region Action Subscribe

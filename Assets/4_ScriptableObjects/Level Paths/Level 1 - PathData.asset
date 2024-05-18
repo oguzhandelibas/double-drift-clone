@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c613795444e2457980ebdf76f80b070, type: 3}
   m_Name: Level 1 - PathData
   m_EditorClassIdentifier: 
+  repeatCount: 2
   Path:
     _serializedList:
     - Key: 0
