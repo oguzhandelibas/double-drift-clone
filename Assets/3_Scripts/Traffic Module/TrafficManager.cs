@@ -8,7 +8,6 @@ namespace DoubleDrift
     {
         public TrafficCarData trafficCarData;
         public TrafficDensity trafficDensity = TrafficDensity.Sparse;
-        
 
         public GameObject GetTrafficCar(TrafficCarType trafficCarType) => trafficCarData.TrafficCars[trafficCarType];
         public GameObject GetRandomTrafficCar() => trafficCarData.GetRandomCar();

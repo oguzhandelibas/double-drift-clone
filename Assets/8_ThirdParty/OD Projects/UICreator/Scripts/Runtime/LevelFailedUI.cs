@@ -1,5 +1,15 @@
-﻿using UnityEngine;
+﻿
+using DoubleDrift.UIModule;
+using UnityEngine;
 
-public class LevelFailedUI : MonoBehaviour
+namespace DoubleDrift
 {
+    public class LevelFailedUI : View
+    {
+        public void _TryAgain()
+        {
+            LevelSignals.Instance.onRestartLevel?.Invoke();
+        }
+    }
 }
+

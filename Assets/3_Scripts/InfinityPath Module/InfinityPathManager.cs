@@ -17,8 +17,6 @@ namespace DoubleDrift
         public Transform vehicle; // Aracın Transform'u
         public int triggerDistance = 3; // Yeni yol oluşturma işleminin tetikleneceği mesafe
         
-        
-        public PathData PathData;
         public int numberOfPaths = 0; // Sahnede aynı anda kaç yol objesi bulunacağını belirler
         public int wayToGoCount; 
             
@@ -27,17 +25,19 @@ namespace DoubleDrift
         private Vector3 pathOffset;
         private bool onPathChange = false;
 
-        public void Initialize(Transform vehicleTransform)
+        public void Initialize(LevelPathData levelPathData,Transform vehicleTransform)
         {
+            Subscribe();
+            
             Debug.Log("Infinity Path Manager Initialize Called!");
             vehicle = vehicleTransform;
             pathPool.Initialize(poolTag.ToString(), transform);
 
-            foreach (var cur in PathData.Path)
+            foreach (var cur in levelPathData.Path)
             {
                 numberOfPaths += cur.Value.size;
             }
-            wayToGoCount = PathData.repeatCount * numberOfPaths;
+            wayToGoCount = levelPathData.repeatCount * numberOfPaths;
             
             nextSpawnPosition = initialSpawnPosition;
 
@@ -80,7 +80,7 @@ namespace DoubleDrift
                 return;
             }
 
-            if (!GameManager.Instance.gameIsStarted) return;
+            if (!GameManager.Instance.gameIsActive) return;
           
             MovePaths();
             CheckAndRecyclePaths();
@@ -128,5 +128,30 @@ namespace DoubleDrift
         {
             return activePaths.Peek().transform.position.z + pathOffset.z * triggerDistance;
         }
+
+        private void ResetBehaviour()
+        {
+            for (int i = transform.childCount - 1; i >= 0; i--)
+            {
+                Destroy(transform.GetChild(i).gameObject);
+            }
+        }
+        
+
+        #region EVENT SUBSCRIBTION
+
+        private void Subscribe()
+        {
+            LevelSignals.Instance.onNextLevel += ResetBehaviour;
+            LevelSignals.Instance.onRestartLevel += ResetBehaviour;
+        }
+
+        private void OnDisable()
+        {
+            LevelSignals.Instance.onNextLevel -= ResetBehaviour;
+            LevelSignals.Instance.onRestartLevel -= ResetBehaviour;
+        }
+
+        #endregion
     }
 }

@@ -42,12 +42,14 @@ namespace DoubleDrift
             _carAcceleration = _carData.GetCarAcceleration();
             _carHandling = _carData.GetCarHandling();
             
+            Reset();
             StartEngine();
         }
         
+
         void Update()
         {
-            if(!GameManager.Instance.gameIsStarted) return;
+            if(!GameManager.Instance.gameIsActive) return;
             
             if (isAccelerating)
             {
@@ -87,7 +89,8 @@ namespace DoubleDrift
         
         public void Rotate(float targetRotation)
         {
-            _rotateTween = carTransform.DORotate(new Vector3(0, -targetRotation/2.25f, 0), rotationDuration, RotateMode.Fast);
+            _rotateTween = carTransform
+                .DORotate(new Vector3(0, -targetRotation / 2.25f, 0), rotationDuration, RotateMode.Fast);
 
             DriftEffect();
             
@@ -157,6 +160,13 @@ namespace DoubleDrift
 
         public void LevelSuccesful()
         {
+            Reset();
+            StopEngine();
+        }
+
+        public void LevelFailed()
+        {
+            Reset();
             StopEngine();
         }
 
@@ -165,11 +175,13 @@ namespace DoubleDrift
         private void OnEnable()
         {
             LevelSignals.Instance.onLevelSuccessful += LevelSuccesful;
+            LevelSignals.Instance.onLevelFailed += LevelFailed;
         }
         
         private void OnDisable()
         {
             LevelSignals.Instance.onLevelSuccessful -= LevelSuccesful;
+            LevelSignals.Instance.onLevelFailed -= LevelFailed;
         }
 
         #endregion

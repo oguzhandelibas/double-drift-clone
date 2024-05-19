@@ -26,16 +26,19 @@ namespace DoubleDrift
             
             _controllable = controllerTransform.GetComponent<IControllable>();
             
-            slideControl.OnSlide += _controllable.Rotate;
-            slideControl.OnSlideEnd += _controllable.Reset;
-            
+            Subscribe();
             
             Debug.Log($"Car Manager Initialized!");
             return controllerTransform;
         }
         
-        
-        #region Action Subscribe
+        #region EVENT SUBSCRIPTION
+
+        private void Subscribe()
+        {
+            slideControl.OnSlide += _controllable.Rotate;
+            slideControl.OnSlideEnd += _controllable.Reset;
+        }
 
         private void OnDisable()
         {

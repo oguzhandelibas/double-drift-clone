@@ -10,6 +10,7 @@ namespace DoubleDrift
     {
         public UnityAction onLevelInitialize = delegate { };
         public UnityAction onLevelSuccessful = delegate { };
+        public UnityAction onLevelFailed = delegate { };
         public UnityAction onNextLevel = delegate { };
         public UnityAction onRestartLevel = delegate { };
 
