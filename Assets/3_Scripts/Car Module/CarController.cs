@@ -33,11 +33,12 @@ namespace DoubleDrift
         private float _carMaxSpeed, _carAcceleration, _carHandling;
         
         private float _currentSpeed = 0f; // Anlık hız (m/s)
-        private float currentAccelerationTime = 0f; // Anlık hızlanma süresi
         private bool isAccelerating = false; 
         
         public void Initialize()
         {
+            transform.GetChild(0).GetComponent<BoxCollider>().enabled = true;
+            
             _carData = carManager.GetCarData();
             _carMaxSpeed = _carData.GetCarSpeed();
             _carAcceleration = _carData.GetCarAcceleration();
@@ -58,7 +59,6 @@ namespace DoubleDrift
             
             if (isAccelerating)
             {
-                currentAccelerationTime += Time.deltaTime;
                 _currentSpeed += _carAcceleration * Time.deltaTime;
                 
                 if (_currentSpeed > _carMaxSpeed)
@@ -94,7 +94,6 @@ namespace DoubleDrift
         
         public void Rotate(float targetRotation)
         {
-            Debug.Log("TAR ROT BU: " + targetRotation);
             if(targetRotation < 5 && targetRotation > -5) return;
             _rotateTween = carTransform
                 .DORotate(new Vector3(0, -targetRotation / 2.25f, 0), rotationDuration, RotateMode.Fast);
@@ -169,12 +168,21 @@ namespace DoubleDrift
         {
             Reset();
             StopEngine();
+            MoveInfinity();
         }
 
         public void LevelFailed()
         {
             Reset();
             StopEngine();
+        }
+        
+        public void MoveInfinity()
+        {
+            transform.GetChild(0).GetComponent<BoxCollider>().enabled = false;
+            carManager.cameraManager.SetFollowObject(null);
+            Vector3 targetPos = new Vector3(0,0,300);
+            transform.DOMove(targetPos, 2.0f);
         }
 
         #region EVENT SUBSCRIPTION

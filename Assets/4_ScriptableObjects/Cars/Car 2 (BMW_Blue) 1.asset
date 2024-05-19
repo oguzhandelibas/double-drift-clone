@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   car:
     image: {fileID: 21300000, guid: 8278e3228934f00439975a5d08be6814, type: 3}
-    prefab: {fileID: 8465082088012638333, guid: 5cf7492edef5049768078e5686082a82,
+    prefab: {fileID: 8465082088012638333, guid: b9a8a8f41f32a4ab680016a9dbef6634,
       type: 3}
     name: 0
     maxSpeed: 170

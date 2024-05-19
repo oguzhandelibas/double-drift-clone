@@ -16,7 +16,7 @@ namespace DoubleDrift
         public void MoveTarget(Transform target)
         {
             Vector3 targetPos = target.position + (Vector3.up * 0.3f);
-            policeCar.DOMove(targetPos+ (Vector3.back * 4f), 2.0f)
+            policeCar.DOMove(targetPos + (Vector3.back * 4f), 2.0f)
                 .OnComplete(() =>
                 {
                     DOVirtual.DelayedCall(1, () =>
@@ -37,7 +37,7 @@ namespace DoubleDrift
         {
             DOTween.KillAll();
             Vector3 targetPos = target.position + (Vector3.up * 0.3f);
-            policeCar.DOMove(targetPos + (Vector3.back * 2f), 1.5f);
+            policeCar.DOMove(targetPos + (Vector3.back * 3f), 1.5f);
         }
     }
 }

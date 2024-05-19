@@ -17,9 +17,8 @@ namespace DoubleDrift
             Initialize(true);
         }
 
-        public async void Initialize(bool firstInit = false)
+        private void Initialize(bool firstInit = false)
         {
-            await Task.Delay(100);
             if(_gameObject != null) Destroy(_gameObject);
             _gameObject = Object.Instantiate(Resources.Load<GameObject>($"Game"));
             _gameObject.name = "--->GAME";

@@ -29,13 +29,13 @@ namespace DoubleDrift
             switch (trafficManager.trafficDensity)
             {
                 case TrafficDensity.Sparse:
-                    trafficCarCount = (int)(carSpawnPoints.Length / 8);
+                    trafficCarCount = (int)(carSpawnPoints.Length / 6);
                     break;
                 case TrafficDensity.Medium:
-                    trafficCarCount = (int)(carSpawnPoints.Length / 7);
+                    trafficCarCount = (int)(carSpawnPoints.Length / 5);
                     break;
                 case TrafficDensity.Frequent:
-                    trafficCarCount = (int)(carSpawnPoints.Length / 6);
+                    trafficCarCount = (int)(carSpawnPoints.Length / 4);
                     break;
             }
 
