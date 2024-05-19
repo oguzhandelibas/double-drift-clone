@@ -35,12 +35,17 @@ namespace DoubleDrift
         private float _currentSpeed = 0f; // Anlık hız (m/s)
         private float currentAccelerationTime = 0f; // Anlık hızlanma süresi
         private bool isAccelerating = false; 
+        
         public void Initialize()
         {
             _carData = carManager.GetCarData();
             _carMaxSpeed = _carData.GetCarSpeed();
             _carAcceleration = _carData.GetCarAcceleration();
             _carHandling = _carData.GetCarHandling();
+
+            carTransform.localPosition = Vector3.zero;
+            
+            _currentSpeed = 0;
             
             Reset();
             StartEngine();
@@ -89,6 +94,8 @@ namespace DoubleDrift
         
         public void Rotate(float targetRotation)
         {
+            Debug.Log("TAR ROT BU: " + targetRotation);
+            if(targetRotation < 5 && targetRotation > -5) return;
             _rotateTween = carTransform
                 .DORotate(new Vector3(0, -targetRotation / 2.25f, 0), rotationDuration, RotateMode.Fast);
 

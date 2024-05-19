@@ -15,7 +15,7 @@ namespace DoubleDrift.UIModule
 
         public void _ClosePanel()
         {
-            //UIManager.Instance.GoBack();
+            UIManager.Instance.GoBack();
         }
 
         #endregion

@@ -65,11 +65,12 @@ namespace DoubleDrift
 
             if (Input.GetMouseButton(0))
             {
+                touchEnd = Input.mousePosition;
                 leftRightSlide = Mathf.Clamp((touchEnd.x - touchStart.x) * resolutionFactorX * slidingFactor, -90f, 90f);
                 
                 OnSlide?.Invoke(leftRightSlide);
                 
-                touchEnd = Input.mousePosition;
+                
             }
 
             if (Input.GetMouseButtonUp(0))

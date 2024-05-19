@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c613795444e2457980ebdf76f80b070, type: 3}
   m_Name: LevelPathData (1)
   m_EditorClassIdentifier: 
-  repeatCount: 2
+  repeatCount: 1
   Path:
     _serializedList:
     - Key: 0
       Value:
+        tag: 
         prefab: {fileID: 1619354459316665127, guid: 2f249c32894a74ba6bd5e03e6a550001,
           type: 3}
         size: 3

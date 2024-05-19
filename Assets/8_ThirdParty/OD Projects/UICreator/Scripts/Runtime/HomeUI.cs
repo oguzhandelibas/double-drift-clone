@@ -15,6 +15,12 @@ namespace DoubleDrift.UIModule
             GameManager.Instance.StartGame();
             _levelSignals.onLevelInitialize.Invoke();
         }
+
+        public void _OpenGarage()
+        {
+            UIManager.Instance.Show<GarageUI>();
+        }
+        
         #endregion
     }
 }

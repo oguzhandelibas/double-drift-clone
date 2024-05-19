@@ -17,10 +17,17 @@ namespace DoubleDrift.UIModule
         View m_CurrentView;
         readonly Stack<View> m_History = new();
 
+        [SerializeField] private TextMeshProUGUI levelIndex;
         [SerializeField] private TextMeshProUGUI speedText;
         public void SetCarSpeed(int carSpeed)
         {
             speedText.text = carSpeed+ " mph";
+        }
+
+        public void SetLevelIndex(int index)
+        {
+            index++;
+            levelIndex.text = $"Level {index}";
         }
         
         void Start()

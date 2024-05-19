@@ -3,16 +3,16 @@ using UnityEngine;
 
 namespace DoubleDrift
 {
-    
+    [System.Serializable]
+    public class Pool
+    {
+        public string tag;
+        public GameObject prefab;
+        public int size;
+    }
     public abstract class Pooler : MonoBehaviour
     {
-        [System.Serializable]
-        public class Pool
-        {
-            public string tag;
-            public GameObject prefab;
-            public int size;
-        }
+        
         
         public Dictionary<string, Queue<GameObject>> poolDictionary;
         public Pool pool;
@@ -67,6 +67,11 @@ namespace DoubleDrift
         {
             objectToReturn.SetActive(false);
             poolDictionary[tag].Enqueue(objectToReturn);
+        }
+
+        public void ResetPool()
+        {
+            poolDictionary.Clear();
         }
     }
 }

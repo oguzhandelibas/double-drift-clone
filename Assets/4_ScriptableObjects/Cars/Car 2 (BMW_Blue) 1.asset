@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe15f8029a1d0470fb3b8c457723322d, type: 3}
-  m_Name: Car 2 (BMW_Blue)
+  m_Name: Car 2 (BMW_Blue) 1
   m_EditorClassIdentifier: 
   car:
     image: {fileID: 21300000, guid: 8278e3228934f00439975a5d08be6814, type: 3}
     prefab: {fileID: 8465082088012638333, guid: 5cf7492edef5049768078e5686082a82,
       type: 3}
     name: 0
-    maxSpeed: 25
-    acceleration: 10
-    handling: 5
+    maxSpeed: 170
+    acceleration: 70
+    handling: 25

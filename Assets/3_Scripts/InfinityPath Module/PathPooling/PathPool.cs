@@ -8,5 +8,11 @@ namespace DoubleDrift
         {
             base.Initialize(tag, parent);
         }
+
+        public void SetPool(GameObject prefab, int size)
+        {
+            pool.prefab = prefab;
+            pool.size = size;
+        }
     }
 }

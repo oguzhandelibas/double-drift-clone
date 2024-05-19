@@ -1,10 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using DoubleDrift;
 using DoubleDrift.UIModule;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 public class GameManager : AbstractSingleton<GameManager>
@@ -19,15 +15,16 @@ public class GameManager : AbstractSingleton<GameManager>
     private int levelIndex = 0;
     public bool gameIsActive = false;
     
-    public void Initialize(LevelPathData levelPathData)
+    public void Initialize(LevelPathData levelPathData, bool firstInit)
     {
         _currentLevelPathData = levelPathData;
+        if(!firstInit) UnSubscribe();
         Subscribe();
         
         gameIsActive = false;
-        Transform vehicleTransform = _carManager.Initialize(inGameTransform);
+        Transform vehicleTransform = _carManager.Initialize(inGameTransform, firstInit);
         _cameraManager.SetFollowObject(vehicleTransform.GetChild(0));
-        _infinityPathManager.Initialize(levelPathData, vehicleTransform);
+        _infinityPathManager.Initialize(levelPathData, vehicleTransform, firstInit);
     }
 
     public int GetLevelIndex() => levelIndex;
@@ -58,12 +55,18 @@ public class GameManager : AbstractSingleton<GameManager>
     public void NextLevel()
     {
         StopGame();
+        levelIndex++;
+        if (BootLoader.Instance.GetLevelDataCount()-1 >= levelIndex) levelIndex = 0;
+        
+        Initialize(BootLoader.Instance.GetLevelPath(levelIndex) ,false);
+        UIManager.Instance.Show<HomeUI>();
+        UIManager.Instance.SetLevelIndex(levelIndex);
     }
     
     public void RestartGame()
     {
-        LevelSignals.Instance.onRestartLevel?.Invoke();
-        Initialize(_currentLevelPathData);
+        Initialize(_currentLevelPathData, false);
+        UIManager.Instance.Show<HomeUI>();
     }
 
     #region EVENT SUBCRIBTION
@@ -77,12 +80,17 @@ public class GameManager : AbstractSingleton<GameManager>
         LevelSignals.Instance.onRestartLevel += RestartGame;
     }
 
-    private void OnDisable()
+    private void UnSubscribe()
     {
         LevelSignals.Instance.onLevelSuccessful -= LevelSuccess;
         LevelSignals.Instance.onLevelFailed -= LevelFailed;
         LevelSignals.Instance.onNextLevel -= NextLevel;
         LevelSignals.Instance.onRestartLevel -= RestartGame;
+    }
+
+    private void OnDisable()
+    {
+        UnSubscribe();
     }
 
     #endregion

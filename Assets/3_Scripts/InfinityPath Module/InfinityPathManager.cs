@@ -25,14 +25,22 @@ namespace DoubleDrift
         private Vector3 pathOffset;
         private bool onPathChange = false;
 
-        public void Initialize(LevelPathData levelPathData,Transform vehicleTransform)
+        public void Initialize(LevelPathData levelPathData,Transform vehicleTransform, bool firstInit)
         {
-            Subscribe();
+            onPathChange = false;
+            
+            numberOfPaths = 0;
+            wayToGoCount = 0;
+            if(!firstInit) ResetBehaviour();
             
             Debug.Log("Infinity Path Manager Initialize Called!");
             vehicle = vehicleTransform;
             pathPool.Initialize(poolTag.ToString(), transform);
+            pathPool.SetPool(levelPathData.Path[poolTag].prefab, levelPathData.Path[poolTag].size);
 
+            Debug.Log($"PathPool Dict Count: {pathPool.poolDictionary.Values.Count}");
+            
+            
             foreach (var cur in levelPathData.Path)
             {
                 numberOfPaths += cur.Value.size;
@@ -55,6 +63,7 @@ namespace DoubleDrift
 
         private void SpawnInitialPath(bool createTraffic)
         {
+            Debug.Log($"Spawn Position: {nextSpawnPosition}");
             Path path = pathPool.SpawnFromPool(poolTag.ToString(), nextSpawnPosition, Quaternion.identity, out Vector3 objectSize).GetComponent<Path>();
             if (path != null)
             {
@@ -74,14 +83,15 @@ namespace DoubleDrift
 
         private void FixedUpdate()
         {
+            if (!GameManager.Instance.gameIsActive) return;
+            
             if (activePaths == null || activePaths.Count == 0)
             {
                 Debug.LogWarning("Active paths queue is null or empty!");
                 return;
             }
-
-            if (!GameManager.Instance.gameIsActive) return;
-          
+            
+            
             MovePaths();
             CheckAndRecyclePaths();
         }
@@ -135,9 +145,11 @@ namespace DoubleDrift
             {
                 Destroy(transform.GetChild(i).gameObject);
             }
+            activePaths.Clear();
+            pathPool.ResetPool();
         }
         
-
+/*
         #region EVENT SUBSCRIBTION
 
         private void Subscribe()
@@ -146,12 +158,16 @@ namespace DoubleDrift
             LevelSignals.Instance.onRestartLevel += ResetBehaviour;
         }
 
-        private void OnDisable()
+        private void UnSubscribe()
         {
             LevelSignals.Instance.onNextLevel -= ResetBehaviour;
             LevelSignals.Instance.onRestartLevel -= ResetBehaviour;
         }
+        private void OnDisable()
+        {
+            UnSubscribe();
+        }
 
-        #endregion
+        #endregion*/
     }
 }

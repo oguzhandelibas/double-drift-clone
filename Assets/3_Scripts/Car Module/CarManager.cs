@@ -1,35 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace DoubleDrift
 {
     public class CarManager : MonoBehaviour
     {
-        [SerializeField] private CarData carData;
+        [SerializeField] private CarData[] carDatas;
+        [SerializeField] private CarData currentCarData;
         [Inject] public CameraManager cameraManager;
         [SerializeField] private SlideControl slideControl;
         private IControllable _controllable;
+        private GameObject _currentCarController;
         public int CurrentCarSpeed { get; set; }
 
-        public CarData GetCarData() => carData;
+        public CarData[] GetCarDatas() => carDatas;
+        public CarData GetCarData() => currentCarData;
         
-        public Transform Initialize(Transform carParent)
+        public Transform Initialize(Transform carParent, bool firstInit)
         {
             Debug.Log($"Car Manager Initializing...");
-
-            Transform controllerTransform = Instantiate(carData.car.prefab, carParent).transform;
-            CarController carController = controllerTransform.GetComponent<CarController>();
+            if (firstInit)
+            {
+                _currentCarController = Instantiate(currentCarData.car.prefab, carParent).gameObject; 
+                
+                _controllable = _currentCarController.GetComponent<IControllable>();
+                Subscribe();
+            }
+            
+            CarController carController = _currentCarController.GetComponent<CarController>();
             carController.carManager = this;
             carController.Initialize();
+            carController.Reset();
+            carController.StartEngine();
             
-            _controllable = controllerTransform.GetComponent<IControllable>();
-            
-            Subscribe();
             
             Debug.Log($"Car Manager Initialized!");
-            return controllerTransform;
+            return _currentCarController.transform;
         }
         
         #region EVENT SUBSCRIPTION
