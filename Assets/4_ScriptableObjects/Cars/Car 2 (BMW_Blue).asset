@@ -17,6 +17,6 @@ MonoBehaviour:
     prefab: {fileID: 8465082088012638333, guid: 462f28cc019ea444b9a1a3400f0c282d,
       type: 3}
     name: 0
-    maxSpeed: 25
-    acceleration: 10
-    handling: 5
+    maxSpeed: 65
+    acceleration: 20
+    handling: 20

@@ -10,7 +10,8 @@ namespace DoubleDrift
     {
         [SerializeField] private CarData[] carDatas;
         [SerializeField] private CarData currentCarData;
-        
+
+        [Inject] private InfinityPathManager _infinityPathManager;
         [Inject] public CameraManager cameraManager;
         [SerializeField] private SlideControl slideControl;
         private IControllable _controllable;
@@ -19,6 +20,21 @@ namespace DoubleDrift
 
         public CarData[] GetCarDatas() => carDatas;
         public CarData GetCarData() => currentCarData;
+
+        public void SetCar(int index)
+        {
+            UnSubscribe();
+            Debug.Log($"Indexxxss: {index}");
+            currentCarData = carDatas[index];
+            Destroy(_currentCarController);
+
+            _currentCarController = Instantiate(currentCarData.car.prefab, transform.parent).gameObject;
+            _controllable = _currentCarController.GetComponent<IControllable>();
+            Subscribe();
+            
+            _infinityPathManager.SetVehicle(_currentCarController.transform);
+            Initialize(transform.parent, false);
+        }
         public Transform GetCurrentCarTransform() => _currentCarController.transform;
         
         public Transform Initialize(Transform carParent, bool firstInit)
@@ -51,10 +67,15 @@ namespace DoubleDrift
             slideControl.OnSlideEnd += _controllable.Reset;
         }
 
-        private void OnDisable()
+        private void UnSubscribe()
         {
             slideControl.OnSlide -= _controllable.Rotate;
             slideControl.OnSlideEnd -= _controllable.Reset;
+        }
+
+        private void OnDisable()
+        {
+            UnSubscribe();
         }
 
         #endregion

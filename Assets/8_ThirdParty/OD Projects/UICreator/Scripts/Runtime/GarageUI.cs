@@ -40,7 +40,7 @@ namespace DoubleDrift
                 _currentCarIndex = 0;
                 SetButtonActiveness(false,true);
             }
-            else if (_currentCarIndex >= _carDatas.Length - 1 )
+            else if (_currentCarIndex >= _carDatas.Length - 1)
             {
                 _currentCarIndex = _carDatas.Length - 1;
                 SetButtonActiveness(true,false);
@@ -64,6 +64,12 @@ namespace DoubleDrift
 
         #region UI BUTTONS
 
+        public void _DriveButton()
+        {
+            _carManager.SetCar(_currentCarIndex);
+            _ClosePanel();
+        }
+        
         public void _NextCarButton()
         {
             _currentCarIndex++;

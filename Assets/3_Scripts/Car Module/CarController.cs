@@ -1,9 +1,6 @@
-using System;
 using DG.Tweening;
 using DoubleDrift.UIModule;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Zenject;
 
 namespace DoubleDrift
 {

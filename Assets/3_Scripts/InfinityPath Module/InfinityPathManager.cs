@@ -50,6 +50,11 @@ namespace DoubleDrift
 
         #region Initialization
 
+        public void SetVehicle(Transform vehicleTransform)
+        {
+            vehicle = vehicleTransform;
+        }
+        
         public void Initialize(LevelPathData levelPathData,Transform vehicleTransform, bool firstInit)
         {
             Debug.Log("Infinity Path Manager Initialize Called!");
@@ -59,7 +64,7 @@ namespace DoubleDrift
             wayToGoCount = 0;
             if(!firstInit) ResetBehaviour();
             
-            vehicle = vehicleTransform;
+            SetVehicle(vehicleTransform);
             pathPool.Initialize(poolTag.ToString(), transform);
             pathPool.SetPool(levelPathData.Path[poolTag].prefab, levelPathData.Path[poolTag].size);
             
