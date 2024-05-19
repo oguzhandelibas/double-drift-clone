@@ -69,8 +69,6 @@ namespace DoubleDrift
                 leftRightSlide = Mathf.Clamp((touchEnd.x - touchStart.x) * resolutionFactorX * slidingFactor, -90f, 90f);
                 
                 OnSlide?.Invoke(leftRightSlide);
-                
-                
             }
 
             if (Input.GetMouseButtonUp(0))

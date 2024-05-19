@@ -4,20 +4,32 @@ using UnityEngine;
 
 namespace DoubleDrift
 {
+    public enum ZoomType
+    {
+        ZoomIn,
+        ZoomOut
+    }
     public class CameraManager : MonoBehaviour
     {
         [SerializeField] private Camera cameraComponent;
         [SerializeField] CinemachineVirtualCamera virtualCamera;
         [SerializeField]
         private float zoomEffectDuration = 1.0f;
-        public void ZoomIn()
-        {
-            cameraComponent.DOFieldOfView(65f, zoomEffectDuration);
-        }
 
-        public void ZoomOut()
+        public void Zoom(ZoomType zoomType)
         {
-            cameraComponent.DOFieldOfView(75f, zoomEffectDuration);
+            float endValue = 0;
+            switch (zoomType)
+            {
+                case ZoomType.ZoomIn:
+                    endValue = 65;
+                    break;
+                case ZoomType.ZoomOut:
+                    endValue = 75;
+                    break;
+            }
+            
+            cameraComponent.DOFieldOfView(endValue, zoomEffectDuration);
         }
 
         public void SetFollowObject(Transform target)

@@ -1,48 +1,60 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 namespace DoubleDrift
 {
     public class CarManager : MonoBehaviour
     {
+        #region SerializeFields
+
         [SerializeField] private CarData[] carDatas;
         [SerializeField] private CarData currentCarData;
+        [SerializeField] private SlideControl slideControl;
+        
+        #endregion
+
+        #region Injection
 
         [Inject] private InfinityPathManager _infinityPathManager;
         [Inject] public CameraManager cameraManager;
-        [SerializeField] private SlideControl slideControl;
-        private IControllable _controllable;
-        private GameObject _currentCarController;
-        public int CurrentCarSpeed { get; set; }
 
+        #endregion
+
+        #region Properties
+
+        public int CurrentCarSpeed { get; set; }
         public CarData[] GetCarDatas() => carDatas;
         public CarData GetCarData() => currentCarData;
+        public Transform GetCurrentCarTransform() => _currentCarController.transform;
+
+        #endregion
+
+        #region Private Fields
+
+        private IControllable _controllable;
+        private GameObject _currentCarController;
+
+        #endregion
+
+        #region Initialization
 
         public void SetCar(int index)
         {
             UnSubscribe();
-            Debug.Log($"Indexxxss: {index}");
             currentCarData = carDatas[index];
             Destroy(_currentCarController);
-
-            _currentCarController = Instantiate(currentCarData.car.prefab, transform.parent).gameObject;
-            _controllable = _currentCarController.GetComponent<IControllable>();
-            Subscribe();
             
-            _infinityPathManager.SetVehicle(_currentCarController.transform);
-            Initialize(transform.parent, false);
+            
+            Initialize(transform.parent, true);
         }
-        public Transform GetCurrentCarTransform() => _currentCarController.transform;
+        
         
         public Transform Initialize(Transform carParent, bool firstInit)
         {
             Debug.Log($"Car Manager Initializing...");
             if (firstInit)
             {
-                _currentCarController = Instantiate(currentCarData.car.prefab, carParent).gameObject; 
+                _currentCarController = Instantiate(currentCarData.car.prefab, carParent).gameObject;
                 
                 _controllable = _currentCarController.GetComponent<IControllable>();
                 Subscribe();
@@ -54,10 +66,14 @@ namespace DoubleDrift
             carController.Reset();
             carController.StartEngine();
             
+            _currentCarController.transform.position = new Vector3(0, 0, 15);
+            _infinityPathManager.SetVehicle(_currentCarController.transform);
             
             Debug.Log($"Car Manager Initialized!");
             return _currentCarController.transform;
         }
+
+        #endregion
         
         #region EVENT SUBSCRIPTION
 

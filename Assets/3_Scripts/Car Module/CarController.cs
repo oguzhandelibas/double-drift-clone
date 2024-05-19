@@ -6,32 +6,49 @@ namespace DoubleDrift
 {
     public class CarController : MonoBehaviour, IControllable
     {
-        /// <summary>
-        /// TO : DO
-        /// ARAÇ KALKIŞ ANINDA ÇATARA PATARA !!!
-        /// DRIFT SÜRESİNE GÖRE EASE TİPİ
-        /// ok DRIFT ESNASINDA KAMERA HAREKETİ
-        /// </summary>
+        #region VARIABLES
 
-        [HideInInspector] public CarManager carManager;
-        [SerializeField] private Ease _ease;
+        #region SerializeFields
+
+        [SerializeField] private Ease easeType;
         
         [SerializeField] private Transform carTransform;
         [SerializeField] private Transform carBodyTransform;
 
         [SerializeField] private GameObject[] burstEffects;
         [SerializeField] private Transform[] frontWheels;
+
+        #endregion
+
+        #region Public & Private Fields
+
+        [HideInInspector] public CarManager carManager;
         
+        private Tween _rotateTween, _moveTween;
+        private CarData _carData;
+        
+        #endregion
+
+        #region Private Variables
+        
+        private float _carMaxSpeed, _carAcceleration, _carHandling;
+        private float _currentSpeed = 0f;
+        private bool _isAccelerating = false; 
+        private bool _driftEffectStarted = false;
+        
+        #endregion
+
+        #region Public Variables
+
         public float rotationDuration = 0.5f;
         public float moveDuration = 2.5f;
 
-        private Tween _rotateTween, _moveTween;
-        private CarData _carData;
-        private float _carMaxSpeed, _carAcceleration, _carHandling;
+        #endregion
+
+        #endregion
         
-        private float _currentSpeed = 0f; // Anlık hız (m/s)
-        private bool isAccelerating = false; 
-        
+        #region Initialization
+
         public void Initialize()
         {
             transform.GetChild(0).GetComponent<BoxCollider>().enabled = true;
@@ -49,12 +66,25 @@ namespace DoubleDrift
             StartEngine();
         }
         
+        public void StartEngine()
+        {
+            _isAccelerating = true;
+        }
+
+        public void StopEngine()
+        {
+            _isAccelerating = false;
+        }
+
+        #endregion
+        
+        #region Drift
 
         void Update()
         {
             if(!GameManager.Instance.gameIsActive) return;
             
-            if (isAccelerating)
+            if (_isAccelerating)
             {
                 _currentSpeed += _carAcceleration * Time.deltaTime;
                 
@@ -79,21 +109,13 @@ namespace DoubleDrift
             UIManager.Instance.SetCarSpeed((int)_currentSpeed);
         }
         
-        public void StartEngine()
-        {
-            isAccelerating = true;
-        }
-
-        public void StopEngine()
-        {
-            isAccelerating = false;
-        }
+        
         
         public void Rotate(float targetRotation)
         {
             if(targetRotation < 5 && targetRotation > -5) return;
             _rotateTween = carTransform
-                .DORotate(new Vector3(0, -targetRotation / 2.25f, 0), rotationDuration, RotateMode.Fast);
+                .DORotate(new Vector3(0, -targetRotation / 2.0f, 0), rotationDuration, RotateMode.Fast);
 
             DriftEffect();
             
@@ -104,18 +126,15 @@ namespace DoubleDrift
             _moveTween = carTransform.DOLocalMove(new Vector3(movePos, 0, 0), moveDuration).SetEase(Ease.Flash);
         }
 
-        private bool driftEffectStarted = false;
+        
         private void DriftEffect()
         {
-            if(driftEffectStarted) return;
+            if(_driftEffectStarted) return;
 
             _carMaxSpeed -= 10;
-            carManager.cameraManager.ZoomIn();
-            foreach (var burstEffect in burstEffects)
-            {
-                burstEffect.SetActive(true);
-            }
-            driftEffectStarted = true;
+            carManager.cameraManager.Zoom(ZoomType.ZoomIn);
+            foreach (var burstEffect in burstEffects) burstEffect.SetActive(true);
+            _driftEffectStarted = true;
         }
 
         private void DriftOnLeft(float targetRotation)
@@ -141,47 +160,48 @@ namespace DoubleDrift
             _carMaxSpeed = _carData.GetCarSpeed();
             _rotateTween.Kill();
             _moveTween.Kill();
-            carManager.cameraManager.ZoomOut();
+            carManager.cameraManager.Zoom(ZoomType.ZoomOut);
             
-            foreach (var burstEffect in burstEffects)
-            {
+            foreach (var burstEffect in burstEffects) 
                 burstEffect.SetActive(false);
-            }
             
-            foreach (var frontWheel in frontWheels)
-            {
+            foreach (var frontWheel in frontWheels) 
                 frontWheel.DOLocalRotate(new Vector3(0f, 0f, 0.0f), rotationDuration, RotateMode.Fast);
-            }
 
-            driftEffectStarted = false;
+            _driftEffectStarted = false;
             
             carBodyTransform.DOLocalRotate(Vector3.zero, rotationDuration, RotateMode.Fast);
-            carTransform.DORotate(Vector3.zero, rotationDuration, RotateMode.Fast).SetEase(_ease);
+            carTransform.DORotate(Vector3.zero, rotationDuration, RotateMode.Fast).SetEase(easeType);
             carTransform.DOLocalMove(new Vector3(carTransform.localPosition.x, 0, 0), moveDuration);
         }
 
+        #endregion
 
-        public void LevelSuccesful()
+        #region Events
+
+        private void LevelSuccesful()
         {
             Reset();
             StopEngine();
             MoveInfinity();
         }
 
-        public void LevelFailed()
+        private void LevelFailed()
         {
             Reset();
             StopEngine();
         }
         
-        public void MoveInfinity()
+        private void MoveInfinity()
         {
             transform.GetChild(0).GetComponent<BoxCollider>().enabled = false;
             carManager.cameraManager.SetFollowObject(null);
             Vector3 targetPos = new Vector3(0,0,300);
-            transform.DOMove(targetPos, 2.0f);
+            transform.DOMove(targetPos, 5.0f);
         }
 
+        #endregion
+        
         #region EVENT SUBSCRIPTION
 
         private void OnEnable()
@@ -197,6 +217,5 @@ namespace DoubleDrift
         }
 
         #endregion
-        
     }
 }

@@ -7,6 +7,8 @@ namespace DoubleDrift
 {
     public class InfinityPathManager : MonoBehaviour
     {
+        #region VARIABLES
+
         #region Injection
 
         [Inject] private CarManager _carManager;
@@ -29,55 +31,56 @@ namespace DoubleDrift
 
         #region Private Fields
 
-        private Vector3 initialSpawnPosition = Vector3.zero;
-        private Transform vehicle;
+        private Vector3 _initialSpawnPosition = Vector3.zero;
+        private Transform _vehicle;
 
         #endregion
 
         #region Private Variables
 
-        private int triggerDistance = 3;
+        private int _triggerDistance = 3;
         
-        private int numberOfPaths = 0;
-        private int wayToGoCount; 
+        private int _numberOfPaths = 0;
+        private int _wayToGoCount; 
             
-        private Queue<Path> activePaths = new Queue<Path>();
-        private Vector3 nextSpawnPosition;
-        private Vector3 pathOffset;
-        private bool onPathChange = false;
+        private Queue<Path> _activePaths = new Queue<Path>();
+        private Vector3 _nextSpawnPosition;
+        private Vector3 _pathOffset;
+        private bool _onPathChange = false;
 
         #endregion
 
+        #endregion
+        
         #region Initialization
 
         public void SetVehicle(Transform vehicleTransform)
         {
-            vehicle = vehicleTransform;
+            _vehicle = vehicleTransform;
         }
         
-        public void Initialize(LevelPathData levelPathData,Transform vehicleTransform, bool firstInit)
+        public void Initialize(LevelPathData levelPathData, bool firstInit)
         {
             Debug.Log("Infinity Path Manager Initialize Called!");
             
-            onPathChange = false;
-            numberOfPaths = 0;
-            wayToGoCount = 0;
+            _onPathChange = false;
+            _numberOfPaths = 0;
+            _wayToGoCount = 0;
             if(!firstInit) ResetBehaviour();
             
-            SetVehicle(vehicleTransform);
             pathPool.Initialize(poolTag.ToString(), transform);
             pathPool.SetPool(levelPathData.Path[poolTag].prefab, levelPathData.Path[poolTag].size);
             
             
-            foreach (var cur in levelPathData.Path) numberOfPaths += cur.Value.size;
-            wayToGoCount = levelPathData.repeatCount * numberOfPaths;
-            nextSpawnPosition = initialSpawnPosition;
+            foreach (var cur in levelPathData.Path) _numberOfPaths += cur.Value.size;
+            _wayToGoCount = levelPathData.repeatCount * _numberOfPaths;
+            _nextSpawnPosition = _initialSpawnPosition;
 
-            for (int i = 0; i < numberOfPaths; i++) SpawnInitialPath(i > 0);
+            for (int i = 0; i < _numberOfPaths; i++) SpawnInitialPath(i > 0);
 
             #region Debug
 
-            if (activePaths.Count == 0)
+            if (_activePaths.Count == 0)
             {
                 Debug.LogError("No paths were spawned. Please check the pool settings and ensure there are enough objects.");
             }
@@ -87,17 +90,17 @@ namespace DoubleDrift
         }
         private void SpawnInitialPath(bool createTraffic)
         {
-            Debug.Log($"Spawn Position: {nextSpawnPosition}");
-            Path path = pathPool.SpawnFromPool(poolTag.ToString(), nextSpawnPosition, Quaternion.identity, out Vector3 objectSize).GetComponent<Path>();
+            Debug.Log($"Spawn Position: {_nextSpawnPosition}");
+            Path path = pathPool.SpawnFromPool(poolTag.ToString(), _nextSpawnPosition, Quaternion.identity, out Vector3 objectSize).GetComponent<Path>();
             if (path != null)
             {
                 path.transform.SetParent(transform);
                 
                 if(createTraffic) path.CreateTraffic(trafficManager);
                 
-                activePaths.Enqueue(path);
-                pathOffset = new Vector3(0, 0, objectSize.z);
-                nextSpawnPosition += pathOffset;
+                _activePaths.Enqueue(path);
+                _pathOffset = new Vector3(0, 0, objectSize.z);
+                _nextSpawnPosition += _pathOffset;
             }
             else
             {
@@ -112,7 +115,7 @@ namespace DoubleDrift
         private void FixedUpdate()
         {
             if (!GameManager.Instance.gameIsActive) return;
-            if (activePaths == null || activePaths.Count == 0)
+            if (_activePaths == null || _activePaths.Count == 0)
             {
                 Debug.LogWarning("Active paths queue is null or empty!");
                 return;
@@ -125,13 +128,13 @@ namespace DoubleDrift
         // Yolların hareketini kontrol eder
         private void MovePaths()
         {
-            if (onPathChange) return;
+            if (_onPathChange) return;
             
             // ReSharper disable once PossibleLossOfFraction
             float carSpeed = (_carManager.CurrentCarSpeed / 3);
             Vector3 moveDistance = Vector3.back * (carSpeed * Time.deltaTime);
     
-            foreach (Path path in activePaths)
+            foreach (Path path in _activePaths)
             {
                 path.transform.position += moveDistance;
             }
@@ -140,28 +143,28 @@ namespace DoubleDrift
         // Yeni yol oluşumunu takip eder
         private void CheckAndRecyclePaths()
         {
-            if (vehicle.position.z <= GetActivePathWithOffsetAndTriggerDistance()) return;
-            onPathChange = true;
+            if (_vehicle.position.z <= GetActivePathWithOffsetAndTriggerDistance()) return;
+            _onPathChange = true;
 
-            Path oldPath = activePaths.Dequeue();
+            Path oldPath = _activePaths.Dequeue();
             oldPath.ClearPreviousTraffic();
             
-            Vector3 newPosition = nextSpawnPosition - (pathOffset * triggerDistance);
+            Vector3 newPosition = _nextSpawnPosition - (_pathOffset * _triggerDistance);
 
             oldPath.transform.position = newPosition;
             oldPath.CreateTraffic(trafficManager);
             
-            activePaths.Enqueue(oldPath);
+            _activePaths.Enqueue(oldPath);
             
             CheckLevelEnd();
-            onPathChange = false;
+            _onPathChange = false;
         }
         
         // Levelin bitimini kontrol eder
         private void CheckLevelEnd()
         {
-            wayToGoCount--;
-            if (wayToGoCount > 0) return;
+            _wayToGoCount--;
+            if (_wayToGoCount > 0) return;
             
             UIManager.Instance.Show<LevelCompletedUI>();
             GameManager.Instance.StopGame();
@@ -170,7 +173,7 @@ namespace DoubleDrift
         
         private float GetActivePathWithOffsetAndTriggerDistance()
         {
-            return activePaths.Peek().transform.position.z + pathOffset.z * triggerDistance;
+            return _activePaths.Peek().transform.position.z + _pathOffset.z * _triggerDistance;
         }
 
         #endregion
@@ -184,7 +187,7 @@ namespace DoubleDrift
             {
                 Destroy(transform.GetChild(i).gameObject);
             }
-            activePaths.Clear();
+            _activePaths.Clear();
             pathPool.ResetPool();
         }
 

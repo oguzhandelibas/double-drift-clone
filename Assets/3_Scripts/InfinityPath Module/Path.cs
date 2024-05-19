@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +10,7 @@ namespace DoubleDrift
         [SerializeField] private string trafficCarTag = "TrafficCar";
 
         private List<GameObject> activeTrafficCars = new List<GameObject>();
-        private bool trafficCreated = false; // Trafik oluşturuldu mu kontrolü
+        private bool trafficCreated = false;
 
         public void CreateTraffic(TrafficManager trafficManager)
         {
@@ -38,7 +37,12 @@ namespace DoubleDrift
                     trafficCarCount = (int)(carSpawnPoints.Length / 4);
                     break;
             }
+        
+            Shuffle(trafficCarCount);    
+        }
 
+        private void Shuffle(int trafficCarCount)
+        {
             // Fisher-Yates Shuffle
             Transform[] shuffledSpawnPoints = (Transform[])carSpawnPoints.Clone();
             for (int i = shuffledSpawnPoints.Length - 1; i > 0; i--)
@@ -55,6 +59,7 @@ namespace DoubleDrift
                 activeTrafficCars.Add(trafficCar);
             }
         }
+        
 
         public void ClearPreviousTraffic()
         {

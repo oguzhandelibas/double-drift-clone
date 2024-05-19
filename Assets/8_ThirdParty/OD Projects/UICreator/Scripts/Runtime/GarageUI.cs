@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using DoubleDrift.UIModule;
 using UnityEngine;
 using UnityEngine.UI;

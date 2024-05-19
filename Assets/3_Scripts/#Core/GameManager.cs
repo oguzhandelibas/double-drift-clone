@@ -12,10 +12,9 @@ public class GameManager : AbstractSingleton<GameManager>
     [Inject] private PoliceManager _policeManager;
     [Inject] private OpponentManager _opponentManager;
     
-    
     private LevelPathData _currentLevelPathData;
     
-    private int levelIndex = 0;
+    private int _levelIndex = 0;
     public bool gameIsActive = false;
     
     public void Initialize(LevelPathData levelPathData, bool firstInit)
@@ -30,10 +29,12 @@ public class GameManager : AbstractSingleton<GameManager>
         gameIsActive = false;
         Transform vehicleTransform = _carManager.Initialize(inGameTransform, firstInit);
         _cameraManager.SetFollowObject(vehicleTransform.GetChild(0));
-        _infinityPathManager.Initialize(levelPathData, vehicleTransform, firstInit);
+        _infinityPathManager.Initialize(levelPathData, firstInit);
     }
 
-    public int GetLevelIndex() => levelIndex;
+    public int GetLevelIndex() => _levelIndex;
+
+    #region Events
 
     public void StartGame()
     {
@@ -64,12 +65,12 @@ public class GameManager : AbstractSingleton<GameManager>
     public void NextLevel()
     {
         StopGame();
-        levelIndex++;
-        if (BootLoader.Instance.GetLevelDataCount()-1 >= levelIndex) levelIndex = 0;
+        _levelIndex++;
+        if (BootLoader.Instance.GetLevelDataCount()-1 >= _levelIndex) _levelIndex = 0;
         
-        Initialize(BootLoader.Instance.GetLevelPath(levelIndex) ,false);
+        Initialize(BootLoader.Instance.GetLevelPath(_levelIndex) ,false);
         UIManager.Instance.Show<HomeUI>();
-        UIManager.Instance.SetLevelIndex(levelIndex);
+        UIManager.Instance.SetLevelIndex(_levelIndex);
     }
     
     public void RestartGame()
@@ -77,6 +78,9 @@ public class GameManager : AbstractSingleton<GameManager>
         Initialize(_currentLevelPathData, false);
         UIManager.Instance.Show<HomeUI>();
     }
+
+    #endregion
+    
 
     #region EVENT SUBCRIBTION
 
