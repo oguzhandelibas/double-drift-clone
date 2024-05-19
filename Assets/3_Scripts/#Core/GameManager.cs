@@ -21,6 +21,8 @@ public class GameManager : AbstractSingleton<GameManager>
     public void Initialize(LevelPathData levelPathData, bool firstInit)
     {
         _policeManager.ResetPoliceCar();
+        _opponentManager.ResetOpponentCar();
+        
         _currentLevelPathData = levelPathData;
         if(!firstInit) UnSubscribe();
         Subscribe();

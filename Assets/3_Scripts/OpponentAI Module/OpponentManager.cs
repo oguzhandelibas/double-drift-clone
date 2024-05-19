@@ -10,7 +10,7 @@ namespace DoubleDrift
         public void ResetOpponentCar()
         {
             DOTween.KillAll();
-            opponentCar.transform.position = Vector3.zero;
+            opponentCar.transform.position = new Vector3(3,0.35f,0);
         }
         
         public void MoveTarget()
