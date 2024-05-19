@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using DoubleDrift.UIModule;
 using UnityEngine;
 
@@ -15,7 +16,14 @@ namespace DoubleDrift
                 crashEffect.SetActive(true);
                 LevelSignals.Instance.onLevelFailed?.Invoke();
                 Debug.Log($"Car crashed to {component.gameObject.name}");
+                CloseEffect();
             }
+        }
+
+        private async void CloseEffect()
+        {
+            await Task.Delay(200);
+            crashEffect.SetActive(false);
         }
     }
 }

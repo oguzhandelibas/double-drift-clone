@@ -9,7 +9,10 @@ public class GameManager : AbstractSingleton<GameManager>
     [Inject] private InfinityPathManager _infinityPathManager;
     [Inject] private CarManager _carManager;
     [Inject] private CameraManager _cameraManager;
-
+    [Inject] private PoliceManager _policeManager;
+    [Inject] private OpponentManager _opponentManager;
+    
+    
     private LevelPathData _currentLevelPathData;
     
     private int levelIndex = 0;
@@ -17,6 +20,7 @@ public class GameManager : AbstractSingleton<GameManager>
     
     public void Initialize(LevelPathData levelPathData, bool firstInit)
     {
+        _policeManager.ResetPoliceCar();
         _currentLevelPathData = levelPathData;
         if(!firstInit) UnSubscribe();
         Subscribe();
@@ -32,6 +36,8 @@ public class GameManager : AbstractSingleton<GameManager>
     public void StartGame()
     {
         gameIsActive = true;
+        _policeManager.MoveTarget(_carManager.GetCurrentCarTransform());
+        _opponentManager.MoveTarget();
     }
     
     public void StopGame()
@@ -47,6 +53,7 @@ public class GameManager : AbstractSingleton<GameManager>
 
     public void LevelFailed()
     {
+        _policeManager.CatchPlayer(_carManager.GetCurrentCarTransform());
         Debug.Log("Level Failed!");
         UIManager.Instance.Show<LevelFailedUI>();
         StopGame();

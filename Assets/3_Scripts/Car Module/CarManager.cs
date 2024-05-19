@@ -10,6 +10,7 @@ namespace DoubleDrift
     {
         [SerializeField] private CarData[] carDatas;
         [SerializeField] private CarData currentCarData;
+        
         [Inject] public CameraManager cameraManager;
         [SerializeField] private SlideControl slideControl;
         private IControllable _controllable;
@@ -18,6 +19,7 @@ namespace DoubleDrift
 
         public CarData[] GetCarDatas() => carDatas;
         public CarData GetCarData() => currentCarData;
+        public Transform GetCurrentCarTransform() => _currentCarController.transform;
         
         public Transform Initialize(Transform carParent, bool firstInit)
         {
