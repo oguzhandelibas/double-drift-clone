@@ -1,3 +1,4 @@
+using DG.Tweening;
 using DoubleDrift.UIModule;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,6 +33,10 @@ namespace DoubleDrift
 
         private void SetCarProperties(CarData carData)
         {
+            carImage.DOFade(0, 0.25f).SetEase(Ease.Linear).OnComplete((() =>
+            {
+                carImage.DOFade(1, 0.25f);
+            }));
             if (_currentCarIndex <= 0)
             {
                 _currentCarIndex = 0;
@@ -48,9 +53,14 @@ namespace DoubleDrift
             }
             carImage.sprite = carData.car.image;
             
-            speedAmount.fillAmount = Mathf.InverseLerp(0,200, carData.car.maxSpeed);
-            accelerationAmount.fillAmount = Mathf.InverseLerp(0,100, carData.car.acceleration);
-            handlingAmount.fillAmount = Mathf.InverseLerp(0,50, carData.car.handling);
+            float speed = Mathf.InverseLerp(0,200, carData.car.maxSpeed);
+            float acceleration = Mathf.InverseLerp(0,100, carData.car.acceleration);
+            float handling = Mathf.InverseLerp(0,50, carData.car.handling);
+
+            speedAmount.DOFillAmount(speed, 0.5f).SetEase(Ease.Linear);
+            accelerationAmount.DOFillAmount(acceleration, 0.75f).SetEase(Ease.Linear);
+            handlingAmount.DOFillAmount(handling, 1).SetEase(Ease.Linear);
+            
         }
 
         private void SetButtonActiveness(bool previousBtn, bool nextBtn)
@@ -78,6 +88,18 @@ namespace DoubleDrift
             _currentCarIndex--;
             SetCarProperties(_carDatas[_currentCarIndex]);
         }
+
+        #endregion
+
+        #region ANIMATION
+
+        public override void Show()
+        {
+            
+            base.Show();
+        }
+        
+        
 
         #endregion
     }

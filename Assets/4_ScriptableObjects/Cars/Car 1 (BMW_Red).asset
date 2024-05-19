@@ -18,5 +18,5 @@ MonoBehaviour:
       type: 3}
     name: 0
     maxSpeed: 90
-    acceleration: 35
+    acceleration: 30
     handling: 10
