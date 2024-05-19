@@ -7,6 +7,7 @@ namespace DoubleDrift
     {
         public override void InstallBindings()
         {
+            Container.Bind<LevelCompletedUI>().FromComponentInHierarchy().AsSingle();
             Container.Bind<OpponentManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<PoliceManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<LevelSignals>().FromComponentInHierarchy().AsSingle();

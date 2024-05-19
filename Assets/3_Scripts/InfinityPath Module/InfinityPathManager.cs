@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DoubleDrift.UIModule;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 namespace DoubleDrift
@@ -36,9 +37,9 @@ namespace DoubleDrift
 
         #endregion
 
-        #region Private Variables
+        #region Public & Private Variables
 
-        private int _triggerDistance = 3;
+        public int triggerDistance = 3;
         
         private int _numberOfPaths = 0;
         private int _wayToGoCount; 
@@ -149,7 +150,7 @@ namespace DoubleDrift
             Path oldPath = _activePaths.Dequeue();
             oldPath.ClearPreviousTraffic();
             
-            Vector3 newPosition = _nextSpawnPosition - (_pathOffset * _triggerDistance);
+            Vector3 newPosition = _nextSpawnPosition - (_pathOffset * triggerDistance);
 
             oldPath.transform.position = newPosition;
             oldPath.CreateTraffic(trafficManager);
@@ -173,7 +174,7 @@ namespace DoubleDrift
         
         private float GetActivePathWithOffsetAndTriggerDistance()
         {
-            return _activePaths.Peek().transform.position.z + _pathOffset.z * _triggerDistance;
+            return _activePaths.Peek().transform.position.z + _pathOffset.z * triggerDistance;
         }
 
         #endregion

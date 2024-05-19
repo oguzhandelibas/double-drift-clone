@@ -6,6 +6,8 @@ using Zenject;
 public class GameManager : AbstractSingleton<GameManager>
 {
     [SerializeField] private Transform inGameTransform;
+    
+    [Inject] private LevelCompletedUI _levelCompletedUI;
     [Inject] private InfinityPathManager _infinityPathManager;
     [Inject] private CarManager _carManager;
     [Inject] private CameraManager _cameraManager;
@@ -51,6 +53,7 @@ public class GameManager : AbstractSingleton<GameManager>
     public void LevelSuccess()
     {
         UIManager.Instance.Show<LevelCompletedUI>();
+        _levelCompletedUI.SetProgress(BootLoader.Instance.GetLevelDataCount(), _levelIndex);
         StopGame();
     }
 
@@ -66,7 +69,7 @@ public class GameManager : AbstractSingleton<GameManager>
     {
         StopGame();
         _levelIndex++;
-        if (BootLoader.Instance.GetLevelDataCount()-1 >= _levelIndex) _levelIndex = 0;
+        if (_levelIndex > BootLoader.Instance.GetLevelDataCount()-1) _levelIndex = 0;
         
         Initialize(BootLoader.Instance.GetLevelPath(_levelIndex) ,false);
         UIManager.Instance.Show<HomeUI>();

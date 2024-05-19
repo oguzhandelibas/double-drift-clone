@@ -171,6 +171,8 @@ MonoBehaviour:
   pathDatas:
   - {fileID: 11400000, guid: 153d049cac5bc4200ba22b788ddf7c15, type: 2}
   - {fileID: 11400000, guid: cbd8c41188e6c43928ccae4221a5c0a6, type: 2}
+  - {fileID: 11400000, guid: 1010d05e693ce4dd996b0c2590c7ebbb, type: 2}
+  - {fileID: 11400000, guid: 5ded9ac7fa8e04faba19da6e014467f0, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
