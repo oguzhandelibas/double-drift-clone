@@ -122,7 +122,7 @@ namespace DoubleDrift
             if(targetRotation > 0) DriftOnLeft(targetRotation/2);
             else DriftOnRight(targetRotation/2);
             
-            float movePos = Mathf.Clamp(carTransform.localPosition.x + (targetRotation / 40), -3, 3);
+            float movePos = Mathf.Clamp(carTransform.localPosition.x + (targetRotation / 25), -3, 3);
             _moveTween = carTransform.DOLocalMove(new Vector3(movePos, 0, 0), moveDuration).SetEase(Ease.Flash);
         }
 
